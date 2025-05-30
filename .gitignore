@@ -1,0 +1,20 @@
+# IDE files
+.idea/
+.vscode/
+
+# Rust build output
+target/
+
+# Database data
+pgdata/
+pgdata/*
+
+# Output and generated files
+output/
+
+# Environment and config files
+.env
+*.env
+
+# Other
+.DS_Store

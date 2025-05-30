@@ -1,0 +1,14 @@
+database:
+  host: "localhost"
+  port: 5432
+  user: "demo"
+  password: "demo"
+  dbname: "demo"
+batch:
+  since: "2025-05-29T14:00:00Z"
+  max_rows: 1000
+
+output:
+  directory: "./output"
+  partition: true
+  format: "json"  # or "ndjson"

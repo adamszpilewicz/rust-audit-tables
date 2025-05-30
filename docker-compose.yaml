@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  pg:
+    build: .
+    container_name: pg-replication-demo
+    restart: unless-stopped
+
+    # --- Credentials & database name --------------------
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: demo
+
+    # --- Persist data -----------------------------------
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data           # database files
+      - ./init:/docker-entrypoint-initdb.d/:ro    # run *.sql on first boot
+
+    # --- Networking ------------------------------------
+    ports:
+      - "5432:5432"
+
+    # --- Postgres settings for logical replication ------
+    command: >
+      -c listen_addresses='*'
+      -c wal_level=logical
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c shared_preload_libraries=''
+
+volumes:
+  pgdata:
