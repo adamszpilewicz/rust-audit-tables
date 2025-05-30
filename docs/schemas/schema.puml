@@ -1,0 +1,28 @@
+@startuml
+skinparam arrowColor #333
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+
+actor Scheduler as Cron
+
+package "PostgreSQL Database" {
+    entity "Main Tables\n(e.g. customer)" as Main
+    entity "Audit Tables\n(audit_customer)" as Audit
+    Main --> Audit : Triggers on\nINSERT/UPDATE/DELETE
+}
+
+package "Rust Audit Exporter" {
+    component "audit_exporter\n(Rust App)" as Exporter
+    database "Config File\n(config.yaml)" as Config
+    Exporter --> Config : Load config\n(e.g. changed_at)
+    Exporter --> Audit : Fetch changes\nWHERE changed_at > last
+}
+
+package "Google Cloud" {
+    cloud "GCS Bucket" as GCS
+    Exporter --> GCS : Write JSON files\n(partitioned by table/schema/date)
+}
+
+Cron --> Exporter : Trigger every 24h
+
+@enduml
